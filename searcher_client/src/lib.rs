@@ -188,7 +188,7 @@ pub async fn send_bundle_with_confirmation(
 
 pub async fn send_bundle_no_wait(
     transactions: &[VersionedTransaction],
-    searcher_client: &mut SearcherServiceClient<InterceptedService<Channel, ClientInterceptor>>,
+    searcher_client: &mut SearcherServiceClient<Channel>,
 ) -> Result<Response<SendBundleResponse>, Status> {
     // convert them to packets + send over
     let packets: Vec<_> = transactions
