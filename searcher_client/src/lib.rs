@@ -60,21 +60,29 @@ pub type BlockEngineConnectionResult<T> = Result<T, BlockEngineConnectionError>;
 
 pub async fn get_searcher_client(
     block_engine_url: &str,
-    //auth_keypair: &Arc<Keypair>,
+    auth_keypair: &Arc<Keypair>,
 ) -> BlockEngineConnectionResult<
     SearcherServiceClient<InterceptedService<Channel, ClientInterceptor>>,
 > {
     let auth_channel = create_grpc_channel(block_engine_url).await?;
     let client_interceptor = ClientInterceptor::new(
         AuthServiceClient::new(auth_channel),
-        //auth_keypair,
-        //Role::Searcher
+        auth_keypair,
+        Role::Searcher
     )
     .await?;
 
     let searcher_channel = create_grpc_channel(block_engine_url).await?;
     let searcher_client =
         SearcherServiceClient::with_interceptor(searcher_channel, client_interceptor);
+    Ok(searcher_client)
+}
+
+pub async fn get_searcher_client_no_auth(
+    block_engine_url: &str,
+) -> BlockEngineConnectionResult<SearcherServiceClient<Channel>> {
+    let searcher_channel = create_grpc_channel(block_engine_url).await?;
+    let searcher_client = SearcherServiceClient::new(searcher_channel);
     Ok(searcher_client)
 }
 
