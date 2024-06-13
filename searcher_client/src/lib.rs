@@ -97,7 +97,7 @@ pub async fn create_grpc_channel(url: &str) -> BlockEngineConnectionResult<Chann
 pub async fn send_bundle_with_confirmation(
     transactions: &[VersionedTransaction],
     rpc_client: &RpcClient,
-    searcher_client: &mut SearcherServiceClient<InterceptedService<Channel, ClientInterceptor>>,
+    searcher_client: &mut SearcherServiceClient<Channel>,
     bundle_results_subscription: &mut Streaming<BundleResult>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let bundle_signatures: Vec<Signature> =
